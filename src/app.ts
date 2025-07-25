@@ -7,8 +7,7 @@ import { errorMiddleware } from "./api/middlewares";
 import { ENV } from "./config";
 import { statusCode } from "./api/types/types";
 import path from "path"
-import { userRoute } from "./api/routes/user.route";
-
+import { userRoute } from "./api/routes/auth.routes";
 
 // 🚀 Initialize express application
 const app = express();
@@ -44,7 +43,7 @@ app.get("/", (_, res) => {
 });
 
 
-app.use("/api/auth", userRoute)
+app.use("/api/auth", userRoute);
 
 // ⚠️ Global error handling middleware
 app.use(errorMiddleware);

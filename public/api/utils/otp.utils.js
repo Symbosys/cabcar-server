@@ -15,13 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendOtp = exports.generateOtp = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const generateOtp = () => {
-    const otp = crypto_1.default.randomInt(100000, 999999).toString();
+    const otp = crypto_1.default.randomInt(1000, 10000).toString();
     return otp;
 };
 exports.generateOtp = generateOtp;
 const sendOtp = (mobile, otp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const message = `Dear Customer, ${otp} is your one time password (OTP) to login to 789. Don't share OTP with anyone. Team Azmobia`;
+        const message = `Dear Customer, ${otp} is your one time password (OTP) to login to cabcar. Don't share OTP with anyone. Team Cab Car`;
         const url = `${process.env.AZMOBIA_BASE_URL}?authentic-key=${process.env.AZMOBIA_AUTH_KEY}&senderid=${process.env.AZMOBIA_SENDER_ID}&route=${process.env.AZMOBIA_ROUTE}&templateid=${process.env.AZMOBIA_TEMPLATE_ID}&message=${encodeURIComponent(message)}&number=${mobile}`;
         const response = yield fetch(url);
         if (!response.ok) {

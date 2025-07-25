@@ -33,6 +33,10 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userController = void 0;
+exports.VehicleTypeController = exports.AdminController = exports.userController = void 0;
 const userController = __importStar(require("./user.controller"));
 exports.userController = userController;
+const AdminController = __importStar(require("./admin.controller"));
+exports.AdminController = AdminController;
+const VehicleTypeController = __importStar(require("./vechileType.controller"));
+exports.VehicleTypeController = VehicleTypeController;

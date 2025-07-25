@@ -14,63 +14,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id            Int           @id @default(autoincrement())
-  mobile        String        @unique
+  id            Int            @id @default(autoincrement())
+  mobile        String         @unique
   name          String
   city          String?
-  email         String?   @unique // Add email field (optional)
-  photo         String?   // Add photo field to store the file path (optional)
-  joinedDate    DateTime      @default(now())
-  loyaltyPoints Int           @default(0) // Added for loyalty rewards system
+  email         String?        @unique // Add email field (optional)
+  photo         String? // Add photo field to store the file path (optional)
+  joinedDate    DateTime       @default(now())
+  loyaltyPoints Int            @default(0) // Added for loyalty rewards system
   documents     Document[]
   bookings      Booking[]
   notifications Notification[] // Added for user notifications
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
   @@index([mobile])
 }
 
-model Admin {
-  id            Int       @id @default(autoincrement())
-  email         String    @unique
-  password      String
-  name          String
-  role          String    @default("admin")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+model admin {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  role      admin_role @default(sub_admin)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime
 
   @@index([email])
 }
 
+enum admin_role {
+  admin
+  sub_admin
+}
+
 model Car {
-  id              Int           @id @default(autoincrement())
-  name            String
-  number          String        @unique
-  typeId          Int?          // Added to link to VehicleType
-  type            VehicleType?  @relation(fields: [typeId], references: [id]) // Added relationship
-  fuel            String
-  transmission    String
-  seats           Int
-  available       Boolean       @default(true)
-  location        String
-  latitude        Float?
-  longitude       Float?
-  features        Json
-  benefits        Json
+  id                 Int          @id @default(autoincrement())
+  name               String
+  number             String       @unique
+  typeId             Int? // Added to link to VehicleType
+  type               VehicleType? @relation(fields: [typeId], references: [id]) // Added relationship
+  fuel               String
+  transmission       String
+  seats              Int
+  available          Boolean      @default(true)
+  location           String
+  latitude           Float?
+  longitude          Float?
+  features           Json
+  benefits           Json
   cancellationPolicy String?
-  pricePerKm      Float?    @default(0)
-  pricePerDay     Float?        @default(0)
-  driverCharge    Float
-  convenienceFee  Float         @default(0)
-  tripProtectionFee Float     @default(0)
-  deposit         Float
-  images          Json
-  bookings        Booking[]
-  locations       Location[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  pricePerKm         Float?       @default(0)
+  pricePerDay        Float?       @default(0)
+  driverCharge       Float
+  convenienceFee     Float        @default(0)
+  tripProtectionFee  Float        @default(0)
+  deposit            Float
+  images             Json
+  bookings           Booking[]
+  locations          Location[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
   @@index([number])
   @@index([available])
@@ -78,29 +83,29 @@ model Car {
 }
 
 model VehicleType {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?       // Optional description
-  cars        Car[]         // Relationship to Car model
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String? // Optional description
+  cars        Car[] // Relationship to Car model
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([name])
 }
 
 model Booking {
-  id            Int       @id @default(autoincrement())
-  vehicleId     Int
-  customerId    Int
-  pickupDate    DateTime
-  returnDate    DateTime
-  amount        Float
-  driver        Boolean   @default(false)
-  status        String    @default("Upcoming")
-  car           Car       @relation(fields: [vehicleId], references: [id])
-  customer      User      @relation(fields: [customerId], references: [id])
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id         Int      @id @default(autoincrement())
+  vehicleId  Int
+  customerId Int
+  pickupDate DateTime
+  returnDate DateTime
+  amount     Float
+  driver     Boolean  @default(false)
+  status     String   @default("Upcoming")
+  car        Car      @relation(fields: [vehicleId], references: [id])
+  customer   User     @relation(fields: [customerId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([vehicleId])
   @@index([customerId])
@@ -108,51 +113,51 @@ model Booking {
 }
 
 model Location {
-  id            Int       @id @default(autoincrement())
-  carId         Int
-  latitude      Float
-  longitude     Float
-  timestamp     DateTime  @default(now())
-  car           Car       @relation(fields: [carId], references: [id])
-  createdAt     DateTime  @default(now())
+  id        Int      @id @default(autoincrement())
+  carId     Int
+  latitude  Float
+  longitude Float
+  timestamp DateTime @default(now())
+  car       Car      @relation(fields: [carId], references: [id])
+  createdAt DateTime @default(now())
 
   @@index([carId])
   @@index([timestamp])
 }
 
 model Document {
-  id            Int       @id @default(autoincrement())
-  userId        Int
-  type          String
-  number        String?
-  filePath  String
-  image         String
-  verified      Boolean   @default(false)
-  user          User      @relation(fields: [userId], references: [id])
-  uploadedAt    DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  type       String
+  number     String?
+  filePath   String
+  image      String
+  verified   Boolean  @default(false)
+  user       User     @relation(fields: [userId], references: [id])
+  uploadedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([userId])
 }
 
 model Otp {
-  id            Int       @id @default(autoincrement())
-  mobile        String
-  otp           String
-  expiresAt     DateTime
-  createdAt     DateTime  @default(now())
+  id        Int      @id @default(autoincrement())
+  mobile    String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   @@index([mobile])
 }
 
 model Notification {
-  id        Int           @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   userId    Int
   message   String
-  read      Boolean       @default(false)
-  user      User          @relation(fields: [userId], references: [id])
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  read      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
 }

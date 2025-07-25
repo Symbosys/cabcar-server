@@ -1,6 +1,7 @@
 import { ZodError } from "zod";
+import AdminValidator, {AdminType} from "./admin.validator";
 
-export {zodError}
+export {zodError, AdminValidator, AdminType}
 
 const zodError = (error: ZodError) => {
   let errors: any = {};

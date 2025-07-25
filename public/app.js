@@ -11,7 +11,7 @@ const express_rate_limit_1 = require("express-rate-limit");
 const middlewares_1 = require("./api/middlewares");
 const config_1 = require("./config");
 const path_1 = __importDefault(require("path"));
-const user_route_1 = require("./api/routes/user.route");
+const auth_routes_1 = require("./api/routes/auth.routes");
 // 🚀 Initialize express application
 const app = (0, express_1.default)();
 // 🛡️ Security and utility middlewares
@@ -38,7 +38,7 @@ app.use((0, express_rate_limit_1.rateLimit)({
 app.get("/", (_, res) => {
     res.send("Hello World");
 });
-app.use("/api/auth", user_route_1.userRoute);
+app.use("/api/auth", auth_routes_1.userRoute);
 // ⚠️ Global error handling middleware
 app.use(middlewares_1.errorMiddleware);
 // 📤 Export the configured app
