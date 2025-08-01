@@ -6,5 +6,5 @@ export const OtpValidator = z.object({
 
 export const LoginValidator = z.object({
   mobile: z.string().regex(/^\+?\d{10,15}$/, "Invalid mobile number"),
-  otp: z.string().length(6, "OTP must be 6 digits"),
+  otp: z.string().length(4, "OTP must be 4 digits"),
 });
