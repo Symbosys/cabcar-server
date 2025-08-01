@@ -129,8 +129,8 @@ export const getVehicles = asyncHandler(async (req: Request, res: Response) => {
   const where: any = {};
   if (search) {
     where.OR = [
-      { name: { contains: search, mode: 'insensitive' } },
-      { number: { contains: search, mode: 'insensitive' } },
+      { name: { contains: search} },
+      { number: { contains: search} },
     ];
   }
   if (available !== undefined) {

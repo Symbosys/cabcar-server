@@ -12,6 +12,7 @@ const middlewares_1 = require("./api/middlewares");
 const config_1 = require("./config");
 const path_1 = __importDefault(require("path"));
 const auth_routes_1 = require("./api/routes/auth.routes");
+const vechileType_route_1 = __importDefault(require("./api/routes/vechileType.route"));
 // 🚀 Initialize express application
 const app = (0, express_1.default)();
 // 🛡️ Security and utility middlewares
@@ -39,6 +40,7 @@ app.get("/", (_, res) => {
     res.send("Hello World");
 });
 app.use("/api/auth", auth_routes_1.userRoute);
+app.use("/api/vehicle-types", vechileType_route_1.default);
 // ⚠️ Global error handling middleware
 app.use(middlewares_1.errorMiddleware);
 // 📤 Export the configured app

@@ -8,6 +8,7 @@ import { ENV } from "./config";
 import { statusCode } from "./api/types/types";
 import path from "path"
 import { userRoute } from "./api/routes/auth.routes";
+import vehicleTypeRoute from "./api/routes/vechileType.route";
 
 // 🚀 Initialize express application
 const app = express();
@@ -44,6 +45,7 @@ app.get("/", (_, res) => {
 
 
 app.use("/api/auth", userRoute);
+app.use("/api/vehicle-types", vehicleTypeRoute);
 
 // ⚠️ Global error handling middleware
 app.use(errorMiddleware);

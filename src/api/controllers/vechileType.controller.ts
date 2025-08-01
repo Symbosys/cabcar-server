@@ -17,25 +17,8 @@ const QuerySchema = z.object({
 });
 
 export const getVehicleTypes = asyncHandler(async (req: Request, res: Response) => {
-  const { search, sort } = QuerySchema.parse(req.query);
-  
-  const where: any = {};
-  if (search) {
-    where.name = { contains: search, mode: "insensitive" };
-  }
 
-  const [sortField, sortOrder] = sort.split(":");
-  const orderBy: any = {};
-  if (sortField && sortOrder) {
-    orderBy[sortField] = sortOrder;
-  } else {
-    orderBy.id = "asc";
-  }
-
-  const vehicleTypes = await prisma.vehicleType.findMany({
-    where,
-    orderBy,
-  });
+  const vehicleTypes = await prisma.vehicleType.findMany()
 
   return SuccessResponse(
     res,

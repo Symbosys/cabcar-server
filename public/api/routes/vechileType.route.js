@@ -8,5 +8,5 @@ vehicleTypeRoute.get("/", controllers_1.VehicleTypeController.getVehicleTypes);
 vehicleTypeRoute
     .route("/:id")
     .get(controllers_1.VehicleTypeController.getVehicleTypeById)
-    .put(controllers_1.VehicleTypeController.updateVehicleType).delete();
+    .put(controllers_1.VehicleTypeController.updateVehicleType).delete(controllers_1.VehicleTypeController.deleteVehicleType);
 exports.default = vehicleTypeRoute;

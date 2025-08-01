@@ -19,10 +19,14 @@ const generateOtp = () => {
     return otp;
 };
 exports.generateOtp = generateOtp;
+const MSGCLUB_BASE_URL = process.env.MSGCLUB_BASE_URL;
+const MSGCLUB_AUTH_KEY = process.env.MSGCLUB_AUTH_KEY;
+const MSGCLUB_SENDER_ID = process.env.MSGCLUB_SENDER_ID;
+const MSGCLUB_ROUTE_ID = process.env.MSGCLUB_ROUTE_ID;
 const sendOtp = (mobile, otp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const message = `Dear Customer, ${otp} is your one time password (OTP) to login to cabcar. Don't share OTP with anyone. Team Cab Car`;
-        const url = `${process.env.AZMOBIA_BASE_URL}?authentic-key=${process.env.AZMOBIA_AUTH_KEY}&senderid=${process.env.AZMOBIA_SENDER_ID}&route=${process.env.AZMOBIA_ROUTE}&templateid=${process.env.AZMOBIA_TEMPLATE_ID}&message=${encodeURIComponent(message)}&number=${mobile}`;
+        const message = `Dear Customer, ${otp} is your one time password (OTP) to login to Cab Car (https://cabcar.in/). Don't share OTP with anyone. Regards- DEEPAK KUMAR`;
+        const url = `${MSGCLUB_BASE_URL}?AUTH_KEY=${MSGCLUB_AUTH_KEY}&message=${encodeURIComponent(message)}&senderId=${MSGCLUB_SENDER_ID}&routeId=${MSGCLUB_ROUTE_ID}&mobileNos=${mobile}&smsContentType=english`;
         const response = yield fetch(url);
         if (!response.ok) {
             throw new Error(`SMS API Error: ${response.statusText}`);

@@ -25,23 +25,7 @@ const QuerySchema = zod_1.z.object({
     sort: zod_1.z.string().default("id:asc"),
 });
 exports.getVehicleTypes = (0, middlewares_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { search, sort } = QuerySchema.parse(req.query);
-    const where = {};
-    if (search) {
-        where.name = { contains: search, mode: "insensitive" };
-    }
-    const [sortField, sortOrder] = sort.split(":");
-    const orderBy = {};
-    if (sortField && sortOrder) {
-        orderBy[sortField] = sortOrder;
-    }
-    else {
-        orderBy.id = "asc";
-    }
-    const vehicleTypes = yield config_1.prisma.vehicleType.findMany({
-        where,
-        orderBy,
-    });
+    const vehicleTypes = yield config_1.prisma.vehicleType.findMany();
     return (0, response_util_1.SuccessResponse)(res, "Vehicle types fetched successfully", { vehicleTypes }, types_1.statusCode.OK);
 }));
 exports.getVehicleTypeById = (0, middlewares_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

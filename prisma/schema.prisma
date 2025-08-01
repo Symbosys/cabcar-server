@@ -55,22 +55,23 @@ model Car {
   number             String       @unique
   typeId             Int? // Added to link to VehicleType
   type               VehicleType? @relation(fields: [typeId], references: [id]) // Added relationship
-  fuel               String
-  transmission       String
+  fuel               String?
+  transmission       String?
+  ac                 Boolean      @default(false)
   seats              Int
   available          Boolean      @default(true)
-  location           String
+  location           String?
   latitude           Float?
   longitude          Float?
-  features           Json
-  benefits           Json
+  features           Json?
+  benefits           Json?
   cancellationPolicy String?
   pricePerKm         Float?       @default(0)
   pricePerDay        Float?       @default(0)
   driverCharge       Float
-  convenienceFee     Float        @default(0)
-  tripProtectionFee  Float        @default(0)
-  deposit            Float
+  convenienceFee     Float?        @default(0)
+  tripProtectionFee  Float?        @default(0)
+  deposit            Float?
   images             Json
   bookings           Booking[]
   locations          Location[]

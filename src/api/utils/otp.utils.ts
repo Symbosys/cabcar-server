@@ -7,11 +7,16 @@ export const generateOtp = (): string => {
 };
 
 
+const MSGCLUB_BASE_URL = process.env.MSGCLUB_BASE_URL;
+const MSGCLUB_AUTH_KEY = process.env.MSGCLUB_AUTH_KEY;
+const MSGCLUB_SENDER_ID = process.env.MSGCLUB_SENDER_ID;
+const MSGCLUB_ROUTE_ID = process.env.MSGCLUB_ROUTE_ID;
+
 export const sendOtp = async (mobile: string, otp: string): Promise<void> => {
   try {
-    const message = `Dear Customer, ${otp} is your one time password (OTP) to login to cabcar. Don't share OTP with anyone. Team Cab Car`;
+    const message = `Dear Customer, ${otp} is your one time password (OTP) to login to Cab Car (https://cabcar.in/). Don't share OTP with anyone. Regards- DEEPAK KUMAR`;
 
-    const url = `${process.env.AZMOBIA_BASE_URL}?authentic-key=${process.env.AZMOBIA_AUTH_KEY}&senderid=${process.env.AZMOBIA_SENDER_ID}&route=${process.env.AZMOBIA_ROUTE}&templateid=${process.env.AZMOBIA_TEMPLATE_ID}&message=${encodeURIComponent(message)}&number=${mobile}`;
+    const url = `${MSGCLUB_BASE_URL}?AUTH_KEY=${MSGCLUB_AUTH_KEY}&message=${encodeURIComponent(message)}&senderId=${MSGCLUB_SENDER_ID}&routeId=${MSGCLUB_ROUTE_ID}&mobileNos=${mobile}&smsContentType=english`;
 
     const response = await fetch(url);
 

@@ -121,8 +121,8 @@ exports.getVehicles = (0, middlewares_1.asyncHandler)((req, res) => __awaiter(vo
     const where = {};
     if (search) {
         where.OR = [
-            { name: { contains: search, mode: 'insensitive' } },
-            { number: { contains: search, mode: 'insensitive' } },
+            { name: { contains: search } },
+            { number: { contains: search } },
         ];
     }
     if (available !== undefined) {
