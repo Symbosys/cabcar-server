@@ -1,17 +1,20 @@
+import cors from "cors";
 import express from "express";
+import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import morgan from "morgan";
-import cors from "cors";
-import { rateLimit } from "express-rate-limit";
+import path from "path";
 import { errorMiddleware } from "./api/middlewares";
-import { ENV } from "./config";
-import { statusCode } from "./api/types/types";
-import path from "path"
-import { userRoute } from "./api/routes/auth.routes";
+import { authRoute } from "./api/routes/auth.routes";
+import vehicleRoute from "./api/routes/vechile.route";
 import vehicleTypeRoute from "./api/routes/vechileType.route";
+import { ENV } from "./config";
+import DriverRoute from "./api/routes/driver.routes";
+import userRoute from "./api/routes/user.routes";
 
 // 🚀 Initialize express application
 const app = express();
+
 
 // 🛡️ Security and utility middlewares
 app.use(express.json());
@@ -28,7 +31,7 @@ app.use(
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, //⌛ 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 1000, // limit each IP to 100 requests per windowMs
     message: {
       status: 429,
       message: "Too many requests, please try again later",
@@ -40,12 +43,15 @@ app.use(
 
 // 🩺 Health check endpoint
 app.get("/", (_, res) => {
-  res.send("Hello World");
+  res.send("Hello Worldsss");
 });
 
 
-app.use("/api/auth", userRoute);
+app.use("/api/auth", authRoute);
 app.use("/api/vehicle-types", vehicleTypeRoute);
+app.use("/api/vehicles", vehicleRoute)
+app.use("/api/drivers", DriverRoute)
+app.use("/api/users", userRoute)
 
 // ⚠️ Global error handling middleware
 app.use(errorMiddleware);

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { userController } from "../controllers";
+import { AuthController } from "../controllers";
 
-const userRoute = Router();
+const authRoute = Router();
 
-userRoute.post("/request-otp", userController.requestOtp)
-userRoute.post("/user/login", userController.userLogin)
+authRoute.post("/request-otp", AuthController.requestOtp)
+authRoute.post("/user/login", AuthController.userLogin)
 
-export {userRoute}
+export {authRoute}

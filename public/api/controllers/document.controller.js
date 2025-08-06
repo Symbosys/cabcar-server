@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.getDocumentByUserId = exports.verifyDocument = void 0;
+exports.getDocumentByUserId = exports.verifyDocument = void 0;
 const config_1 = require("../../config");
 const middlewares_1 = require("../middlewares");
 const types_1 = require("../types/types");
@@ -92,46 +92,4 @@ exports.getDocumentByUserId = (0, middlewares_1.asyncHandler)((req, res, next) =
         return next(new utils_1.ErrorResponse("Document not found", types_1.statusCode.Not_Found));
     }
     return (0, response_util_1.SuccessResponse)(res, "Document found", document, types_1.statusCode.OK);
-}));
-// get ALl users
-exports.getAllUsers = (0, middlewares_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const page = Number(req.params.page);
-    const limit = Number(req.params.limit);
-    const search = req.params.search;
-    const where = {};
-    if (search) {
-        where.OR = [
-            { firstName: { contains: search } },
-            { lastName: { contains: search } },
-            { email: { contains: search } },
-        ];
-    }
-    const skip = (page - 1) * limit;
-    const [totalUser, users] = yield Promise.all([
-        config_1.prisma.user.count({ where }),
-        config_1.prisma.user.findMany({
-            where,
-            skip,
-            take: limit,
-            orderBy: { createdAt: "desc" },
-        })
-    ]);
-    return (0, response_util_1.SuccessResponse)(res, "All user Retrived successfully", {
-        users,
-        totalUser,
-        currentPage: page,
-        totalPages: Math.ceil(totalUser / limit),
-        count: users.length
-    });
-}));
-exports.getUserById = (0, middlewares_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.params.userId);
-    if (!userId || isNaN(userId)) {
-        return next(new utils_1.ErrorResponse("Invalid user id", types_1.statusCode.Bad_Request));
-    }
-    const user = yield config_1.prisma.user.findUnique({ where: { id: userId }, include: { documents: true } });
-    if (!user) {
-        return next(new utils_1.ErrorResponse("User not found", types_1.statusCode.Not_Found));
-    }
-    return (0, response_util_1.SuccessResponse)(res, "User found", user, types_1.statusCode.OK);
 }));

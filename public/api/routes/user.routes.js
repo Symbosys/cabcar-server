@@ -1,1 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controllers_1 = require("../controllers");
+const userRoute = (0, express_1.Router)();
+userRoute.post("/documents", controllers_1.UserController.verifyDocument);
+userRoute.get("/", controllers_1.UserController.getAllUsers);
+userRoute.get("/:id", controllers_1.UserController.getUserById);
+userRoute.get("docments/:userId", controllers_1.UserController.getDocumentByUserId);
+exports.default = userRoute;

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controllers_1 = require("../controllers");
+const middlewares_1 = require("../middlewares");
+const DriverRoute = (0, express_1.Router)();
+DriverRoute.post("/", middlewares_1.multerUpload.single("image"), controllers_1.DriverController.createDriver);
+DriverRoute.get("/", controllers_1.DriverController.getAllDriver);
+DriverRoute.get("/:id", controllers_1.DriverController.getDriverById);
+DriverRoute.put("/:id", middlewares_1.multerUpload.single("image"), controllers_1.DriverController.updateDriver);
+exports.default = DriverRoute;

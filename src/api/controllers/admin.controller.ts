@@ -8,6 +8,8 @@ import { AdminValidator } from "../validators";
 export const createAdmin = asyncHandler(async (req, res, next) => {
   // Validate request body against AdminValidator schema
   const validData = AdminValidator.parse(req.body);
+  req.file
+
   // Ensure only admin roles can be created
   if (validData.role === "admin")
     return next(

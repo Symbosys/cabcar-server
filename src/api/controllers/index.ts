@@ -1,7 +1,9 @@
-import * as userController from "./user.controller"
+import * as AuthController from "./auth.controller"
 import * as AdminController from "./admin.controller"
 import * as VehicleTypeController from "./vechileType.controller"
+import * as VehicleController from "./vechile.controller"
+import * as DriverController from "./driver.controller"
+import * as UserController from "./user.controller"
 
 
-
-export {userController, AdminController, VehicleTypeController}
+export {AuthController, AdminController, VehicleTypeController, VehicleController, DriverController, UserController}

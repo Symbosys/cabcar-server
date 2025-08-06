@@ -10,5 +10,5 @@ exports.OtpValidator = zod_1.default.object({
 });
 exports.LoginValidator = zod_1.default.object({
     mobile: zod_1.default.string().regex(/^\+?\d{10,15}$/, "Invalid mobile number"),
-    otp: zod_1.default.string().length(6, "OTP must be 6 digits"),
+    otp: zod_1.default.string().length(4, "OTP must be 4 digits"),
 });

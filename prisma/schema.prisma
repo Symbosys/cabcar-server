@@ -23,7 +23,7 @@ model User {
   photo         String? // Add photo field to store the file path (optional)
   joinedDate    DateTime       @default(now())
   loyaltyPoints Int            @default(0) // Added for loyalty rewards system
-  documents     Document[]
+  documents     Document?  // Added for user documents
   bookings      Booking[]
   notifications Notification[] // Added for user notifications
   createdAt     DateTime       @default(now())
@@ -63,8 +63,8 @@ model Car {
   location           String?
   latitude           Float?
   longitude          Float?
-  features           Json?
-  benefits           Json?
+  features           String?
+  benefits           String?
   cancellationPolicy String?
   pricePerKm         Float?       @default(0)
   pricePerDay        Float?       @default(0)
@@ -127,17 +127,18 @@ model Location {
 }
 
 model Document {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  type       String
-  number     String?
-  filePath   String
-  image      String
-  verified   Boolean  @default(false)
-  user       User     @relation(fields: [userId], references: [id])
-  uploadedAt DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  userId             Int      @unique
+  user               User     @relation(fields: [userId], references: [id])
+  aadhaarNumber      String?   @unique
+  drivingLicenseNumber String?   @unique
+  aadhaarVerified    Boolean  @default(false)
+  drivingLicenseVerified Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
+  @@index([aadhaarNumber])
+  @@index([drivingLicenseNumber])
   @@index([userId])
 }
 
@@ -161,4 +162,36 @@ model Notification {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+
+model Driver {
+  id Int  @id @default(autoincrement())
+  name String
+  licenseNumber String @unique
+  location String?
+  experienceYears Int
+  image Json?
+  available Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  isActive Boolean @default(true)
+
+  @@index([licenseNumber])
+  DriverBooking DriverBooking[]
+}
+
+model DriverBooking {
+  id Int @id @default(autoincrement())
+  driverId Int
+  bookingId Int
+  driver Driver @relation(fields: [driverId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([bookingId])
 }

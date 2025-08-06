@@ -1,72 +1,155 @@
-import { Request, Response } from "express";
+import { prisma } from "../../config";
 import { asyncHandler } from "../middlewares";
 import { statusCode } from "../types/types";
-import { ErrorResponse, jwt, OTP } from "../utils";
+import { ErrorResponse } from "../utils";
 import { SuccessResponse } from "../utils/response.util";
-import { z } from "zod";
-import { prisma } from "../../config";
-import { LoginValidator, OtpValidator } from "../validators/user.validator";
+import { VerifyUserIdentitySchema } from "../validators/document.validator";
 
-export const requestOtp = asyncHandler(async (req: Request, res: Response) => {
-  const validData = OtpValidator.parse(req.body);
-  const otp = OTP.generateOtp();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+export const verifyDocument = asyncHandler(async (req, res, next) => {
+    const validData = VerifyUserIdentitySchema.parse(req.body);
 
-  const existingOtp = await prisma.otp.findFirst({
-    where: { mobile: validData.mobile },
-  });
-  if (existingOtp) {
-    await prisma.otp.delete({ where: { id: existingOtp.id } });
-  }
+    const { userId, aadhaarNumber, drivingLicenseNumber } = validData;
 
-  await prisma.otp.create({
-    data: { mobile: validData.mobile, otp, expiresAt },
-  });
+     // Check if user exists
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    return next(new ErrorResponse("User not found", statusCode.Not_Found));
+    }
+    
+     // Check for duplicate Aadhaar number (if provided and verified elsewhere)
+  if (aadhaarNumber) {
+    const existingAadhaar = await prisma.document.findFirst({
+      where: { aadhaarNumber, aadhaarVerified: true },
+    });
+    if (existingAadhaar && existingAadhaar.userId !== userId) {
+      return next(new ErrorResponse("Aadhaar number is already verified for another user", statusCode.Bad_Request));
+    }
+    }
+    
+     // Check for duplicate Driving License number (if provided and verified elsewhere)
+  if (drivingLicenseNumber) {
+    const existingDL = await prisma.document.findFirst({
+      where: { drivingLicenseNumber, drivingLicenseVerified: true },
+    });
+    if (existingDL && existingDL.userId !== userId) {
+      return next(new ErrorResponse("Driving license number is already verified for another user", statusCode.Bad_Request));
+    }
+    }
+    
+    // Check if UserIdentity record exists for the user
+  const existingIdentity = await prisma.document.findUnique({ where: { userId } });
 
-  await OTP.sendOtp(validData.mobile, otp);
+    if (existingIdentity) {
+    // Check if provided numbers match verified ones
+    if (aadhaarNumber && existingIdentity.aadhaarNumber === aadhaarNumber && existingIdentity.aadhaarVerified) {
+      return next(new ErrorResponse("Aadhaar number is already verified for this user", statusCode.Bad_Request));
+    }
+    if (
+      drivingLicenseNumber &&
+      existingIdentity.drivingLicenseNumber === drivingLicenseNumber &&
+      existingIdentity.drivingLicenseVerified
+    ) {
+      return next(new ErrorResponse("Driving license number is already verified for this user", statusCode.Bad_Request));
+    }
 
-  return SuccessResponse(
-    res,
-    "OTP sent successfully",
-    { mobile: validData.mobile },
-    statusCode.OK
-  );
-});
+    // Update existing UserIdentity record
+    const updatedIdentity = await prisma.document.update({
+      where: { userId },
+      data: {
+        aadhaarNumber: aadhaarNumber || existingIdentity.aadhaarNumber || null,
+        drivingLicenseNumber: drivingLicenseNumber || existingIdentity.drivingLicenseNumber || null,
+        aadhaarVerified: aadhaarNumber ? true : existingIdentity.aadhaarVerified,
+        drivingLicenseVerified: drivingLicenseNumber ? true : existingIdentity.drivingLicenseVerified,
+      },
+    });
 
-export const userLogin = asyncHandler(async (req: Request, res: Response) => {
-  const validData = LoginValidator.parse(req.body);
-
-  const storedOtp = await prisma.otp.findFirst({
-    where: {
-      mobile: validData.mobile,
-      otp: validData.otp,
-      expiresAt: { gt: new Date() },
+    return SuccessResponse(res, "User identity updated successfully", updatedIdentity, statusCode.OK);
+    }
+    
+    // Create new UserIdentity record
+  const newIdentity = await prisma.document.create({
+    data: {
+      userId,
+      aadhaarNumber: aadhaarNumber || null,
+      drivingLicenseNumber: drivingLicenseNumber || null,
+      aadhaarVerified: aadhaarNumber ? true : false, // Default to true (no external API)
+      drivingLicenseVerified: drivingLicenseNumber ? true : false, // Default to true (no external API)
     },
   });
 
-  if (!storedOtp) {
-    throw new ErrorResponse("Invalid or expired OTP", statusCode.Bad_Request);
+  return SuccessResponse(res, "User identity created successfully", newIdentity, statusCode.Created);
+})
+
+export const getDocumentByUserId = asyncHandler(async (req, res, next) => {
+    const userId = Number(req.params.userId);
+    
+    if(!userId || isNaN(userId)){
+        return next(new ErrorResponse("Invalid user id", statusCode.Bad_Request));
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return next(new ErrorResponse("User not found", statusCode.Not_Found));
+    }
+
+    const document = await prisma.document.findUnique({ where: { userId } });
+    if (!document) {
+      return next(new ErrorResponse("Document not found", statusCode.Not_Found));
+    }
+
+    return SuccessResponse(res, "Document found", document, statusCode.OK);
+})
+
+
+// get ALl users
+export const getAllUsers = asyncHandler(async (req, res, next) => {
+  const page = Number(req.params.page);
+  const limit = Number(req.params.limit);
+  const search = req.params.search;
+
+  const where: any = {};
+
+  if (search) {
+    where.OR = [
+      { firstName: { contains: search } },
+      { lastName: { contains: search} },
+      { email: { contains: search} },
+    ];
+  }
+  
+  const skip = (page - 1) * limit;
+
+  const [totalUser, users] = await Promise.all([
+    prisma.user.count({ where }),
+    prisma.user.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    })
+  ])
+
+  return SuccessResponse(res, "All user Retrived successfully", {
+    users,
+    totalUser,
+    currentPage: page,
+    totalPages: Math.ceil(totalUser / limit),
+    count: users.length
+  })
+
+})
+
+export const getUserById = asyncHandler(async (req, res, next) => {
+  const userId = Number(req.params.userId);
+
+  if(!userId || isNaN(userId)){
+      return next(new ErrorResponse("Invalid user id", statusCode.Bad_Request));
   }
 
-  let user = await prisma.user.findUnique({
-    where: { mobile: validData.mobile },
-  });
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: {documents: true} });
   if (!user) {
-    user = await prisma.user.create({
-      data: { mobile: validData.mobile, name: "New User" },
-    });
+    return next(new ErrorResponse("User not found", statusCode.Not_Found));
   }
 
-  const token = jwt.generateToken({
-    id: user.id,
-  });
-
-  await prisma.otp.delete({ where: { id: storedOtp.id } });
-
-  return SuccessResponse(
-    res,
-    "Login successful",
-    { token, user: { id: user.id, mobile: user.mobile, role: "user" } },
-    statusCode.OK
-  );
-});
+  return SuccessResponse(res, "User found", user, statusCode.OK);
+})

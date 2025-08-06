@@ -25,3 +25,8 @@ export enum transaction_status{
     Refunded = "refunded",
     Rejected = "rejected",
 }
+
+export interface ImageType {
+  public_id: string;
+  url: string;
+}

@@ -19,6 +19,7 @@ const validators_1 = require("../validators");
 exports.createAdmin = (0, middlewares_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // Validate request body against AdminValidator schema
     const validData = validators_1.AdminValidator.parse(req.body);
+    req.file;
     // Ensure only admin roles can be created
     if (validData.role === "admin")
         return next(new utils_1.ErrorResponse("only one admin is allowed", types_1.statusCode.Bad_Request));
