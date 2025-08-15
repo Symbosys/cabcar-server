@@ -7,7 +7,7 @@ export const VerifyUserIdentitySchema = z
       .transform((val) => parseInt(val, 10))
       .refine((val) => Number.isInteger(val) && val > 0, {
         message: "User ID must be a positive integer",
-      }),
+      }).optional(),
     aadhaarNumber: z
       .string()
       .regex(/^\d{12}$/, { message: "Aadhaar number must be exactly 12 digits" })

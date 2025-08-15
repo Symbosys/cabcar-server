@@ -1,5 +1,4 @@
 import { prisma } from "../../config";
-import { AdminService } from "../services";
 import { statusCode } from "../types/types";
 import { ErrorResponse, jwt } from "../utils";
 import { asyncHandler } from "./error.middleware";

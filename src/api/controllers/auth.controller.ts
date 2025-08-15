@@ -65,6 +65,11 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
 
   await prisma.otp.delete({ where: { id: storedOtp.id } });
 
+  res.cookie("token", token, {
+    secure: process.env.NODE_ENV === "production", //? Secure in production
+    sameSite: "strict", //? Prevent CSRF attacks
+  });
+
   return SuccessResponse(
     res,
     "Login successful",

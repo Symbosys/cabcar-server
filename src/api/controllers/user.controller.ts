@@ -8,8 +8,7 @@ import { VerifyUserIdentitySchema } from "../validators/document.validator";
 export const verifyDocument = asyncHandler(async (req, res, next) => {
     const validData = VerifyUserIdentitySchema.parse(req.body);
 
-  const { aadhaarNumber, drivingLicenseNumber } = validData;
-  const userId = Number(req.user.id) || Number(req.params.userId);
+    const { userId, aadhaarNumber, drivingLicenseNumber } = validData;
 
      // Check if user exists
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -52,8 +51,6 @@ export const verifyDocument = asyncHandler(async (req, res, next) => {
     ) {
       return next(new ErrorResponse("Driving license number is already verified for this user", statusCode.Bad_Request));
     }
-
-    // Update existing UserIdentity record
     const updatedIdentity = await prisma.document.update({
       where: { userId },
       data: {
@@ -70,7 +67,7 @@ export const verifyDocument = asyncHandler(async (req, res, next) => {
     // Create new UserIdentity record
   const newIdentity = await prisma.document.create({
     data: {
-      userId,
+      userId: userId as number,
       aadhaarNumber: aadhaarNumber || null,
       drivingLicenseNumber: drivingLicenseNumber || null,
       aadhaarVerified: aadhaarNumber ? true : false, // Default to true (no external API)

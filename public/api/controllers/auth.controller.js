@@ -58,5 +58,9 @@ exports.userLogin = (0, middlewares_1.asyncHandler)((req, res) => __awaiter(void
         id: user.id,
     });
     yield config_1.prisma.otp.delete({ where: { id: storedOtp.id } });
+    res.cookie("token", token, {
+        secure: process.env.NODE_ENV === "production", //? Secure in production
+        sameSite: "strict", //? Prevent CSRF attacks
+    });
     return (0, response_util_1.SuccessResponse)(res, "Login successful", { token, user: { id: user.id, mobile: user.mobile, role: "user" } }, types_1.statusCode.OK);
 }));

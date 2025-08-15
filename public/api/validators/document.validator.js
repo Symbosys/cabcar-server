@@ -12,7 +12,7 @@ exports.VerifyUserIdentitySchema = zod_1.default
         .transform((val) => parseInt(val, 10))
         .refine((val) => Number.isInteger(val) && val > 0, {
         message: "User ID must be a positive integer",
-    }),
+    }).optional(),
     aadhaarNumber: zod_1.default
         .string()
         .regex(/^\d{12}$/, { message: "Aadhaar number must be exactly 12 digits" })
