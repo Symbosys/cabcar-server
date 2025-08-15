@@ -19,7 +19,7 @@ const document_validator_1 = require("../validators/document.validator");
 exports.verifyDocument = (0, middlewares_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = document_validator_1.VerifyUserIdentitySchema.parse(req.body);
     const { aadhaarNumber, drivingLicenseNumber } = validData;
-    const userId = Number(req.user.id);
+    const userId = Number(req.user.id) || Number(req.params.userId);
     // Check if user exists
     const user = yield config_1.prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
