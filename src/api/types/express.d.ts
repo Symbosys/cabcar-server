@@ -9,8 +9,14 @@ export declare global {
                 name: string, 
                 email: string,
                 role: "admin" | "sub_admin"
+            },
+            user: {
+                id: string
+                name: string
+                email: string
             }
         }
     }
 } 
+
 

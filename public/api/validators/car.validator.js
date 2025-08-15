@@ -73,7 +73,7 @@ exports.CarSchema = zod_1.z.object({
         .max(1000, { message: "Cancellation policy must be 1000 characters or less" })
         .optional()
         .describe("Cancellation policy details"),
-    pricePerKm: zod_1.z
+    pricePerHour: zod_1.z
         .string()
         .transform((val) => parseFloat(val))
         .refine((val) => val >= 0, { message: "Price per km cannot be negative" })

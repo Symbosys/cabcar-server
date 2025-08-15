@@ -8,7 +8,8 @@ import { VerifyUserIdentitySchema } from "../validators/document.validator";
 export const verifyDocument = asyncHandler(async (req, res, next) => {
     const validData = VerifyUserIdentitySchema.parse(req.body);
 
-    const { userId, aadhaarNumber, drivingLicenseNumber } = validData;
+  const { aadhaarNumber, drivingLicenseNumber } = validData;
+  const userId = Number(req.user.id);
 
      // Check if user exists
   const user = await prisma.user.findUnique({ where: { id: userId } });
