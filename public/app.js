@@ -16,6 +16,7 @@ const vechileType_route_1 = __importDefault(require("./api/routes/vechileType.ro
 const config_1 = require("./config");
 const driver_routes_1 = __importDefault(require("./api/routes/driver.routes"));
 const user_routes_1 = __importDefault(require("./api/routes/user.routes"));
+const booking_routes_1 = __importDefault(require("./api/routes/booking.routes"));
 // 🚀 Initialize express application
 const app = (0, express_1.default)();
 // 🛡️ Security and utility middlewares
@@ -47,6 +48,7 @@ app.use("/api/vehicle-types", vechileType_route_1.default);
 app.use("/api/vehicles", vechile_route_1.default);
 app.use("/api/drivers", driver_routes_1.default);
 app.use("/api/users", user_routes_1.default);
+app.use("/api/order", booking_routes_1.default);
 // ⚠️ Global error handling middleware
 app.use(middlewares_1.errorMiddleware);
 // 📤 Export the configured app

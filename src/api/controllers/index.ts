@@ -4,6 +4,7 @@ import * as VehicleTypeController from "./vechileType.controller"
 import * as VehicleController from "./vechile.controller"
 import * as DriverController from "./driver.controller"
 import * as UserController from "./user.controller"
+import * as BookingController from "./order.controller"
 
 
-export {AuthController, AdminController, VehicleTypeController, VehicleController, DriverController, UserController}
+export {AuthController, AdminController, VehicleTypeController, VehicleController, DriverController, UserController, BookingController}

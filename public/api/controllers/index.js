@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = exports.DriverController = exports.VehicleController = exports.VehicleTypeController = exports.AdminController = exports.AuthController = void 0;
+exports.BookingController = exports.UserController = exports.DriverController = exports.VehicleController = exports.VehicleTypeController = exports.AdminController = exports.AuthController = void 0;
 const AuthController = __importStar(require("./auth.controller"));
 exports.AuthController = AuthController;
 const AdminController = __importStar(require("./admin.controller"));
@@ -46,3 +46,5 @@ const DriverController = __importStar(require("./driver.controller"));
 exports.DriverController = DriverController;
 const UserController = __importStar(require("./user.controller"));
 exports.UserController = UserController;
+const BookingController = __importStar(require("./order.controller"));
+exports.BookingController = BookingController;

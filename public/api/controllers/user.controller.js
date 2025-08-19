@@ -17,10 +17,11 @@ const utils_1 = require("../utils");
 const response_util_1 = require("../utils/response.util");
 const document_validator_1 = require("../validators/document.validator");
 exports.verifyDocument = (0, middlewares_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("payload", req.body);
     const validData = document_validator_1.VerifyUserIdentitySchema.parse(req.body);
     const { userId, aadhaarNumber, drivingLicenseNumber } = validData;
     // Check if user exists
-    const user = yield config_1.prisma.user.findUnique({ where: { id: userId } });
+    const user = yield config_1.prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
     if (!user) {
         return next(new utils_1.ErrorResponse("User not found", types_1.statusCode.Not_Found));
     }

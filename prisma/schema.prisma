@@ -23,7 +23,7 @@ model User {
   photo         String? // Add photo field to store the file path (optional)
   joinedDate    DateTime       @default(now())
   loyaltyPoints Int            @default(0) // Added for loyalty rewards system
-  documents     Document?  // Added for user documents
+  documents     Document? // Added for user documents
   bookings      Booking[]
   notifications Notification[] // Added for user notifications
   createdAt     DateTime       @default(now())
@@ -66,11 +66,11 @@ model Car {
   features           String?
   benefits           String?
   cancellationPolicy String?
-  pricePerHour         Float?       @default(0)
+  pricePerKm         Float?       @default(0)
   pricePerDay        Float?       @default(0)
   driverCharge       Float
-  convenienceFee     Float?        @default(0)
-  tripProtectionFee  Float?        @default(0)
+  convenienceFee     Float?       @default(0)
+  tripProtectionFee  Float?       @default(0)
   deposit            Float?
   images             Json
   bookings           Booking[]
@@ -95,22 +95,58 @@ model VehicleType {
 }
 
 model Booking {
-  id         Int      @id @default(autoincrement())
-  vehicleId  Int
-  customerId Int
-  pickupDate DateTime
-  returnDate DateTime
-  amount     Float
-  driver     Boolean  @default(false)
-  status     String   @default("Upcoming")
-  car        Car      @relation(fields: [vehicleId], references: [id])
-  customer   User     @relation(fields: [customerId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            Int           @id @default(autoincrement())
+  vehicleId     Int
+  customerId    Int
+  pickupDate    DateTime
+  returnDate    DateTime
+  amount        Float
+  driver        Boolean       @default(false)
+  address String?
+  status        Orderstatus   @default(Upcoming)
+  paymentStatus Paymentstatus @default(Pending)
+  paymentMethod PaymentMethod @default(Cash)
+  car           Car           @relation(fields: [vehicleId], references: [id])
+  customer      User          @relation(fields: [customerId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  Payment       Payment[]
 
   @@index([vehicleId])
   @@index([customerId])
   @@index([status])
+}
+
+enum Orderstatus {
+  Upcoming
+  Ongoing
+  Completed
+}
+
+enum Paymentstatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+enum PaymentMethod {
+  Cash
+  Razapay
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  bookingId     Int
+  amount        Float
+  status        Paymentstatus @default(Pending)
+  paymentMethod PaymentMethod @default(Cash)
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Location {
@@ -127,15 +163,15 @@ model Location {
 }
 
 model Document {
-  id                  Int      @id @default(autoincrement())
-  userId             Int      @unique
-  user               User     @relation(fields: [userId], references: [id])
-  aadhaarNumber      String?   @unique
-  drivingLicenseNumber String?   @unique
-  aadhaarVerified    Boolean  @default(false)
+  id                     Int      @id @default(autoincrement())
+  userId                 Int      @unique
+  user                   User     @relation(fields: [userId], references: [id])
+  aadhaarNumber          String?  @unique
+  drivingLicenseNumber   String?  @unique
+  aadhaarVerified        Boolean  @default(false)
   drivingLicenseVerified Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 
   @@index([aadhaarNumber])
   @@index([drivingLicenseNumber])
@@ -164,30 +200,29 @@ model Notification {
   @@index([userId])
 }
 
-
 model Driver {
-  id Int  @id @default(autoincrement())
-  name String
-  licenseNumber String @unique
-  location String?
+  id              Int     @id @default(autoincrement())
+  name            String
+  licenseNumber   String  @unique
+  location        String?
   experienceYears Int
-  image Json?
-  available Boolean @default(true)
+  image           Json?
+  available       Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  isActive Boolean @default(true)
+  isActive      Boolean         @default(true)
+  DriverBooking DriverBooking[]
 
   @@index([licenseNumber])
-  DriverBooking DriverBooking[]
 }
 
 model DriverBooking {
-  id Int @id @default(autoincrement())
-  driverId Int
+  id        Int    @id @default(autoincrement())
+  driverId  Int
   bookingId Int
-  driver Driver @relation(fields: [driverId], references: [id])
+  driver    Driver @relation(fields: [driverId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

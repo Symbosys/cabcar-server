@@ -11,6 +11,7 @@ import vehicleTypeRoute from "./api/routes/vechileType.route";
 import { ENV } from "./config";
 import DriverRoute from "./api/routes/driver.routes";
 import userRoute from "./api/routes/user.routes";
+import bookingRoute from "./api/routes/booking.routes";
 
 // 🚀 Initialize express application
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/vehicle-types", vehicleTypeRoute);
 app.use("/api/vehicles", vehicleRoute)
 app.use("/api/drivers", DriverRoute)
 app.use("/api/users", userRoute)
+app.use("/api/order", bookingRoute)
 
 // ⚠️ Global error handling middleware
 app.use(errorMiddleware);

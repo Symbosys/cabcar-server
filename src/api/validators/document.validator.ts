@@ -14,11 +14,6 @@ export const VerifyUserIdentitySchema = z
       .optional(),
     drivingLicenseNumber: z
       .string()
-      .min(8, { message: "Driving license number must be at least 8 characters" })
-      .max(16, { message: "Driving license number must be 16 characters or less" })
-      .regex(/^[A-Z0-9-]+$/, {
-        message: "Driving license number must contain only uppercase letters, numbers, or hyphens",
-      })
       .optional(),
   })
   .strict()

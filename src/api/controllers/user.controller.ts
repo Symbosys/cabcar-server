@@ -6,12 +6,13 @@ import { SuccessResponse } from "../utils/response.util";
 import { VerifyUserIdentitySchema } from "../validators/document.validator";
 
 export const verifyDocument = asyncHandler(async (req, res, next) => {
-    const validData = VerifyUserIdentitySchema.parse(req.body);
+  console.log("payload", req.body)
+  const validData = VerifyUserIdentitySchema.parse(req.body);
 
     const { userId, aadhaarNumber, drivingLicenseNumber } = validData;
 
      // Check if user exists
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
   if (!user) {
     return next(new ErrorResponse("User not found", statusCode.Not_Found));
     }
