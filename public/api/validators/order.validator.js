@@ -12,6 +12,7 @@ exports.BookingSchema = zod_1.z.object({
     returnDate: zod_1.z.string().datetime().transform((val) => new Date(val)),
     amount: zod_1.z.number().positive(),
     driver: zod_1.z.boolean().default(false),
+    address: zod_1.z.string().min(1).max(1000).optional(),
     status: exports.OrderStatusEnum.default('Upcoming'),
     paymentStatus: exports.PaymentStatusEnum.default('Pending'),
     paymentMethod: exports.PaymentMethodEnum.default('Cash'),

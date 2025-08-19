@@ -11,6 +11,7 @@ export const BookingSchema = z.object({
   returnDate: z.string().datetime().transform((val) => new Date(val)),
   amount: z.number().positive(),
   driver: z.boolean().default(false),
+  address:  z.string().min(1).max(1000).optional(),
   status: OrderStatusEnum.default('Upcoming'),
   paymentStatus: PaymentStatusEnum.default('Pending'),
   paymentMethod: PaymentMethodEnum.default('Cash'),
