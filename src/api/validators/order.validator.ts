@@ -48,3 +48,60 @@ export const ProcessBookingSchema = z.object({
     path: [],
   }
 );
+
+
+
+// Driver Booking
+
+export const DriverBookingSchema = z.object({
+  driverId: z.number().int().positive({
+    message: 'Driver ID must be a positive integer',
+  }),
+  customerId: z.number().int().positive({
+    message: 'Customer ID must be a positive integer',
+  }),
+  pickupDate: z.string().datetime().transform((val) => new Date(val)),
+  returnDate: z.string().datetime().transform((val) => new Date(val)),
+  address: z.string().optional(),
+  status: OrderStatusEnum.default('Upcoming'),
+  paymentStatus: PaymentStatusEnum.default('Pending'),
+  paymentMethod: PaymentMethodEnum.default('Cash'),
+}).refine(
+  (data) => data.returnDate >= data.pickupDate,
+  {
+    message: 'Return date must be after or equal to pickup date',
+    path: ['returnDate'],
+  }
+).refine(
+  (data) => data.pickupDate > new Date(),
+  {
+    message: 'Pickup date must be in the future',
+    path: ['pickupDate'],
+  }
+);
+
+export type DriverBooking = z.infer<typeof DriverBookingSchema>;
+
+
+export const GetAllDriverBookingsFilterSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().default(10),
+  driverId: z.coerce.number().int().positive().optional(),
+  customerId: z.coerce.number().int().positive().optional(),
+  status: OrderStatusEnum.optional(),
+  paymentStatus: PaymentStatusEnum.optional(),
+  search: z.string().optional(),
+});
+
+
+export const ProcessDriverBookingSchema = z.object({
+  status: OrderStatusEnum.optional(),
+  paymentStatus: PaymentStatusEnum.optional(),
+  paymentMethod: PaymentMethodEnum.optional(),
+}).refine(
+  (data) => Object.keys(data).length > 0,
+  {
+    message: 'At least one field (status, paymentStatus, or paymentMethod) must be provided',
+    path: [],
+  }
+);

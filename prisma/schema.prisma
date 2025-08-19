@@ -30,6 +30,7 @@ model User {
   updatedAt     DateTime       @updatedAt
 
   @@index([mobile])
+  DriverBooking DriverBooking[]
 }
 
 model admin {
@@ -106,6 +107,7 @@ model Booking {
   status        Orderstatus   @default(Upcoming)
   paymentStatus Paymentstatus @default(Pending)
   paymentMethod PaymentMethod @default(Cash)
+  razarPayId    String?
   car           Car           @relation(fields: [vehicleId], references: [id])
   customer      User          @relation(fields: [customerId], references: [id])
   createdAt     DateTime      @default(now())
@@ -137,12 +139,15 @@ enum PaymentMethod {
 
 model Payment {
   id            Int           @id @default(autoincrement())
-  bookingId     Int
+  bookingId     Int?
+  driverBookingId Int?
   amount        Float
   status        Paymentstatus @default(Pending)
   paymentMethod PaymentMethod @default(Cash)
+  razarPayId     String?
 
-  booking Booking @relation(fields: [bookingId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+  driverBooking DriverBooking? @relation(fields: [driverBookingId], references: [id])
 
   paidAt    DateTime?
   createdAt DateTime  @default(now())
@@ -220,13 +225,23 @@ model Driver {
 
 model DriverBooking {
   id        Int    @id @default(autoincrement())
+  customerId    Int
   driverId  Int
-  bookingId Int
   driver    Driver @relation(fields: [driverId], references: [id])
+  customer      User          @relation(fields: [customerId], references: [id])
+  address String?
+  razarPayId    String?
+
+  pickupDate    DateTime
+  returnDate    DateTime
+
+  status        Orderstatus   @default(Upcoming)
+  paymentStatus Paymentstatus @default(Pending)
+  paymentMethod PaymentMethod @default(Cash)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([driverId])
-  @@index([bookingId])
+  Payment Payment[]
 }

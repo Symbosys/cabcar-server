@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controllers_1 = require("../controllers");
+const DriverBookingRoute = (0, express_1.Router)();
+DriverBookingRoute.post("/create", controllers_1.DriverBookingController.createDriverBooking);
+DriverBookingRoute.get("/all", controllers_1.DriverBookingController.getDriverBooking);
+DriverBookingRoute.get("/:id", controllers_1.DriverBookingController.getDriverBookingById);
+DriverBookingRoute.put("/:id", controllers_1.DriverBookingController.processDriverBooking);
+exports.default = DriverBookingRoute;

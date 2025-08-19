@@ -12,6 +12,7 @@ import { ENV } from "./config";
 import DriverRoute from "./api/routes/driver.routes";
 import userRoute from "./api/routes/user.routes";
 import bookingRoute from "./api/routes/booking.routes";
+import DriverBookingRoute from "./api/routes/driverBooking.routes";
 
 // 🚀 Initialize express application
 const app = express();
@@ -54,6 +55,7 @@ app.use("/api/vehicles", vehicleRoute)
 app.use("/api/drivers", DriverRoute)
 app.use("/api/users", userRoute)
 app.use("/api/order", bookingRoute)
+app.use("/api/driver-booking", DriverBookingRoute)
 
 // ⚠️ Global error handling middleware
 app.use(errorMiddleware);
