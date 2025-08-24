@@ -25,21 +25,23 @@ exports.createDriverBooking = (0, middlewares_1.asyncHandler)((req, res, next) =
     if (!driver) {
         return next(new utils_1.ErrorResponse('Driver not found', types_1.statusCode.Bad_Request));
     }
-    const conflictingDriverBooking = yield config_1.prisma.driverBooking.findFirst({
-        where: {
-            driverId: validData.driverId,
-            OR: [
-                {
-                    pickupDate: { lte: validData.returnDate },
-                    returnDate: { gte: validData.pickupDate },
-                },
-            ],
-            status: { in: ['Upcoming', 'Ongoing'] },
-        },
-    });
-    if (conflictingDriverBooking) {
-        return next(new utils_1.ErrorResponse('Driver is not available for the selected dates', types_1.statusCode.Conflict));
-    }
+    // const conflictingDriverBooking = await prisma.driverBooking.findFirst({
+    //   where: {
+    //     driverId: validData.driverId,
+    //     OR: [
+    //       {
+    //         pickupDate: { lte: validData.returnDate },
+    //         returnDate: { gte: validData.pickupDate },
+    //       },
+    //     ],
+    //     status: { in: ['Upcoming', 'Ongoing'] },
+    //   },
+    // });
+    // if (conflictingDriverBooking) {
+    //   return next(
+    //     new ErrorResponse('Driver is not available for the selected dates', statusCode.Conflict)
+    //   );
+    // }
     const driverBooking = yield config_1.prisma.driverBooking.create({
         data: validData,
     });

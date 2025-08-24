@@ -6,16 +6,17 @@ import morgan from "morgan";
 import path from "path";
 import { errorMiddleware } from "./api/middlewares";
 import { authRoute } from "./api/routes/auth.routes";
+import bookingRoute from "./api/routes/booking.routes";
+import DriverRoute from "./api/routes/driver.routes";
+import DriverBookingRoute from "./api/routes/driverBooking.routes";
+import userRoute from "./api/routes/user.routes";
 import vehicleRoute from "./api/routes/vechile.route";
 import vehicleTypeRoute from "./api/routes/vechileType.route";
 import { ENV } from "./config";
-import DriverRoute from "./api/routes/driver.routes";
-import userRoute from "./api/routes/user.routes";
-import bookingRoute from "./api/routes/booking.routes";
-import DriverBookingRoute from "./api/routes/driverBooking.routes";
 
 // 🚀 Initialize express application
 const app = express();
+
 
 
 // 🛡️ Security and utility middlewares

@@ -18,16 +18,10 @@ const response_util_1 = require("../utils/response.util");
 const order_validator_1 = require("../validators/order.validator");
 exports.createBooking = (0, middlewares_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = order_validator_1.BookingSchema.parse(req.body);
+    console.log("payload", req.body);
     // Additional business logic validations
     // 1. Check if pickup date is in the future
     const currentDate = new Date();
-    if (validData.pickupDate <= currentDate) {
-        return next(new utils_1.ErrorResponse('Pickup date must be in the future', types_1.statusCode.Bad_Request));
-    }
-    // 2. Check if return date is after pickup date
-    if (validData.returnDate <= validData.pickupDate) {
-        return next(new utils_1.ErrorResponse('Return date must be after pickup date', types_1.statusCode.Bad_Request));
-    }
     // 3. Check if vehicle exists
     const vehicle = yield config_1.prisma.car.findUnique({
         where: { id: validData.vehicleId },
@@ -36,21 +30,23 @@ exports.createBooking = (0, middlewares_1.asyncHandler)((req, res, next) => __aw
         return next(new utils_1.ErrorResponse('Vehicle not found', types_1.statusCode.Bad_Request));
     }
     // 4. Check vehicle availability for the requested period
-    const conflictingBooking = yield config_1.prisma.booking.findFirst({
-        where: {
-            vehicleId: validData.vehicleId,
-            OR: [
-                {
-                    pickupDate: { lte: validData.returnDate },
-                    returnDate: { gte: validData.pickupDate },
-                },
-            ],
-            status: { in: ['Upcoming', 'Ongoing'] },
-        },
-    });
-    if (conflictingBooking) {
-        return next(new utils_1.ErrorResponse('Vehicle is not available for the selected dates', types_1.statusCode.Conflict));
-    }
+    // const conflictingBooking = await prisma.booking.findFirst({
+    //   where: {
+    //     vehicleId: validData.vehicleId,
+    //     OR: [
+    //       {
+    //         pickupDate: { lte: validData.returnDate },
+    //         returnDate: { gte: validData.pickupDate },
+    //       },
+    //     ],
+    //     status: { in: ['Upcoming', 'Ongoing'] },
+    //   },
+    // });
+    // if (conflictingBooking) {
+    //   return next(
+    //     new ErrorResponse('Vehicle is not available for the selected dates', statusCode.Conflict)
+    //   );
+    // }
     // 5. Check if customer exists
     const customer = yield config_1.prisma.user.findUnique({
         where: { id: validData.customerId },

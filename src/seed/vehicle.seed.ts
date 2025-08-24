@@ -13,7 +13,7 @@ async function seedCar() {
 
   console.log(`Creating 200 cars...`);
 
-  for (let i = 1; i <= 200; i++) {
+  for (let i = 1; i <= 20; i++) {
     const randomType = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
     const hasAC = Math.random() > 0.5;
     const isAvailable = Math.random() > 0.2;

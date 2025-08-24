@@ -11,13 +11,13 @@ const morgan_1 = __importDefault(require("morgan"));
 const path_1 = __importDefault(require("path"));
 const middlewares_1 = require("./api/middlewares");
 const auth_routes_1 = require("./api/routes/auth.routes");
+const booking_routes_1 = __importDefault(require("./api/routes/booking.routes"));
+const driver_routes_1 = __importDefault(require("./api/routes/driver.routes"));
+const driverBooking_routes_1 = __importDefault(require("./api/routes/driverBooking.routes"));
+const user_routes_1 = __importDefault(require("./api/routes/user.routes"));
 const vechile_route_1 = __importDefault(require("./api/routes/vechile.route"));
 const vechileType_route_1 = __importDefault(require("./api/routes/vechileType.route"));
 const config_1 = require("./config");
-const driver_routes_1 = __importDefault(require("./api/routes/driver.routes"));
-const user_routes_1 = __importDefault(require("./api/routes/user.routes"));
-const booking_routes_1 = __importDefault(require("./api/routes/booking.routes"));
-const driverBooking_routes_1 = __importDefault(require("./api/routes/driverBooking.routes"));
 // 🚀 Initialize express application
 const app = (0, express_1.default)();
 // 🛡️ Security and utility middlewares

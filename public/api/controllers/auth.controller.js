@@ -19,7 +19,8 @@ const user_validator_1 = require("../validators/user.validator");
 exports.requestOtp = (0, middlewares_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = user_validator_1.OtpValidator.parse(req.body);
     console.log("payload", req.body);
-    const otp = utils_1.OTP.generateOtp();
+    // 🔹 If number is 6202999356, always send OTP = 1234
+    const otp = validData.mobile === "6202999356" ? "1234" : utils_1.OTP.generateOtp();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
     const existingOtp = yield config_1.prisma.otp.findFirst({
         where: { mobile: validData.mobile },

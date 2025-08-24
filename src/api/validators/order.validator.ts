@@ -14,6 +14,7 @@ export const BookingSchema = z.object({
   address:  z.string().min(1).max(1000).optional(),
   status: OrderStatusEnum.default('Upcoming'),
   paymentStatus: PaymentStatusEnum.default('Pending'),
+  razarPayId: z.string().optional(),
   paymentMethod: PaymentMethodEnum.default('Cash'),
 });
 
@@ -60,25 +61,18 @@ export const DriverBookingSchema = z.object({
   customerId: z.number().int().positive({
     message: 'Customer ID must be a positive integer',
   }),
-  pickupDate: z.string().datetime().transform((val) => new Date(val)),
-  returnDate: z.string().datetime().transform((val) => new Date(val)),
+  // pickupDate: z.string().datetime().transform((val) => new Date(val)),
+  // returnDate: z.string().datetime().transform((val) => new Date(val)),
+  pickupDate: z.string().datetime(),
+  returnDate: z.string().datetime(),
   address: z.string().optional(),
+  amount: z.number().positive(),
   status: OrderStatusEnum.default('Upcoming'),
   paymentStatus: PaymentStatusEnum.default('Pending'),
   paymentMethod: PaymentMethodEnum.default('Cash'),
-}).refine(
-  (data) => data.returnDate >= data.pickupDate,
-  {
-    message: 'Return date must be after or equal to pickup date',
-    path: ['returnDate'],
-  }
-).refine(
-  (data) => data.pickupDate > new Date(),
-  {
-    message: 'Pickup date must be in the future',
-    path: ['pickupDate'],
-  }
-);
+  razarPayId: z.string().optional(),
+})
+
 
 export type DriverBooking = z.infer<typeof DriverBookingSchema>;
 

@@ -15,6 +15,7 @@ exports.BookingSchema = zod_1.z.object({
     address: zod_1.z.string().min(1).max(1000).optional(),
     status: exports.OrderStatusEnum.default('Upcoming'),
     paymentStatus: exports.PaymentStatusEnum.default('Pending'),
+    razarPayId: zod_1.z.string().optional(),
     paymentMethod: exports.PaymentMethodEnum.default('Cash'),
 });
 // Zod schema for query filters
@@ -44,18 +45,16 @@ exports.DriverBookingSchema = zod_1.z.object({
     customerId: zod_1.z.number().int().positive({
         message: 'Customer ID must be a positive integer',
     }),
-    pickupDate: zod_1.z.string().datetime().transform((val) => new Date(val)),
-    returnDate: zod_1.z.string().datetime().transform((val) => new Date(val)),
+    // pickupDate: z.string().datetime().transform((val) => new Date(val)),
+    // returnDate: z.string().datetime().transform((val) => new Date(val)),
+    pickupDate: zod_1.z.string().datetime(),
+    returnDate: zod_1.z.string().datetime(),
     address: zod_1.z.string().optional(),
+    amount: zod_1.z.number().positive(),
     status: exports.OrderStatusEnum.default('Upcoming'),
     paymentStatus: exports.PaymentStatusEnum.default('Pending'),
     paymentMethod: exports.PaymentMethodEnum.default('Cash'),
-}).refine((data) => data.returnDate >= data.pickupDate, {
-    message: 'Return date must be after or equal to pickup date',
-    path: ['returnDate'],
-}).refine((data) => data.pickupDate > new Date(), {
-    message: 'Pickup date must be in the future',
-    path: ['pickupDate'],
+    razarPayId: zod_1.z.string().optional(),
 });
 exports.GetAllDriverBookingsFilterSchema = zod_1.z.object({
     page: zod_1.z.coerce.number().int().positive().default(1),

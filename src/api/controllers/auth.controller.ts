@@ -10,7 +10,9 @@ import { LoginValidator, OtpValidator } from "../validators/user.validator";
 export const requestOtp = asyncHandler(async (req: Request, res: Response) => {
   const validData = OtpValidator.parse(req.body);
   console.log("payload", req.body)
-  const otp = OTP.generateOtp();
+
+  // 🔹 If number is 6202999356, always send OTP = 1234
+  const otp = validData.mobile === "6202999356" ? "1234" : OTP.generateOtp();
   const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
   const existingOtp = await prisma.otp.findFirst({
@@ -33,6 +35,7 @@ export const requestOtp = asyncHandler(async (req: Request, res: Response) => {
     statusCode.OK
   );
 });
+
 
 export const userLogin = asyncHandler(async (req: Request, res: Response) => {
   const validData = LoginValidator.parse(req.body);

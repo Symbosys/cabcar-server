@@ -231,6 +231,7 @@ model DriverBooking {
   customer      User          @relation(fields: [customerId], references: [id])
   address String?
   razarPayId    String?
+  amount        Float @default(0)
 
   pickupDate    DateTime
   returnDate    DateTime

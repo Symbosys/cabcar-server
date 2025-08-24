@@ -8,22 +8,10 @@ import { BookingSchema, GetAllBookingsFilterSchema, ProcessBookingSchema } from 
 export const createBooking = asyncHandler(async(req, res, next) => {
     const validData = BookingSchema.parse(req.body);
 
+  console.log("payload", req.body)
     // Additional business logic validations
   // 1. Check if pickup date is in the future
   const currentDate = new Date();
-  if (validData.pickupDate <= currentDate) {
-    return next(
-      new ErrorResponse('Pickup date must be in the future', statusCode.Bad_Request)
-    );
-  }
-
-  // 2. Check if return date is after pickup date
-  if (validData.returnDate <= validData.pickupDate) {
-    return next(
-      new ErrorResponse('Return date must be after pickup date', statusCode.Bad_Request)
-    );
-  }
-
   // 3. Check if vehicle exists
   const vehicle = await prisma.car.findUnique({
     where: { id: validData.vehicleId },
@@ -37,24 +25,24 @@ export const createBooking = asyncHandler(async(req, res, next) => {
 
 
   // 4. Check vehicle availability for the requested period
-  const conflictingBooking = await prisma.booking.findFirst({
-    where: {
-      vehicleId: validData.vehicleId,
-      OR: [
-        {
-          pickupDate: { lte: validData.returnDate },
-          returnDate: { gte: validData.pickupDate },
-        },
-      ],
-      status: { in: ['Upcoming', 'Ongoing'] },
-    },
-  });
+  // const conflictingBooking = await prisma.booking.findFirst({
+  //   where: {
+  //     vehicleId: validData.vehicleId,
+  //     OR: [
+  //       {
+  //         pickupDate: { lte: validData.returnDate },
+  //         returnDate: { gte: validData.pickupDate },
+  //       },
+  //     ],
+  //     status: { in: ['Upcoming', 'Ongoing'] },
+  //   },
+  // });
 
-  if (conflictingBooking) {
-    return next(
-      new ErrorResponse('Vehicle is not available for the selected dates', statusCode.Conflict)
-    );
-  }
+  // if (conflictingBooking) {
+  //   return next(
+  //     new ErrorResponse('Vehicle is not available for the selected dates', statusCode.Conflict)
+  //   );
+  // }
 
   // 5. Check if customer exists
   const customer = await prisma.user.findUnique({
